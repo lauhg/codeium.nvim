@@ -39,7 +39,8 @@ function M.setup(_server)
 		return
 	end
 
-	vim.api.nvim_create_autocmd({ "InsertEnter", "CursorMovedI", "CompleteChanged" }, {
+	-- vim.api.nvim_create_autocmd({ "InsertEnter", "CursorMovedI", "CompleteChanged" }, {
+	vim.api.nvim_create_autocmd({ "TextChangedI", "CompleteChanged" }, {
 		group = augroup,
 		callback = function()
 			M.debounced_complete()
@@ -55,7 +56,8 @@ function M.setup(_server)
 		end,
 	})
 
-	vim.api.nvim_create_autocmd("InsertLeave", {
+	-- vim.api.nvim_create_autocmd("InsertLeave", {
+	vim.api.nvim_create_autocmd({ "InsertLeave", "CursorMovedI" }, {
 		group = augroup,
 		callback = function()
 			M.clear()
