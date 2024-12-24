@@ -94,7 +94,7 @@ function M.setup(_server)
 		end
 
 		if bindings.accept and bindings.accept ~= "" then
-			vim.keymap.set("i", bindings.accept, M.accept, { silent = true, expr = true, script = true, nowait = true })
+			vim.keymap.set("i", bindings.accept, M.accept, { silent = true, expr = true, nowait = true })
 		end
 
 		if bindings.accept_word and bindings.accept_word ~= "" then
@@ -175,7 +175,14 @@ local function completion_inserter(current_completion, insert_text)
 
 	server.accept_completion(current_completion.completion.completionId)
 
-	return '<C-g>u' .. delete_range .. insert_text .. cursor_text
+	vim.schedule(function()
+		local lines = vim.split(text, "\n")
+		vim.cmd(string.format("normal! d%dh", end_offset - start_offset))
+		vim.api.nvim_put(lines, "c", false, true)
+	end)
+
+	return ''
+	-- return '<C-g>u' .. delete_range .. insert_text .. cursor_text
 end
 
 function M.accept()
