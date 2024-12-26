@@ -155,6 +155,10 @@ local function completion_inserter(current_completion, insert_text)
 	local delta = suffix.deltaCursorOffset or 0
 	local start_offset = range.startOffset or 0
 	local end_offset = range.endOffset or 0
+	local start_row = tonumber(range.startPosition.row or 0)
+	local start_col = tonumber(range.startPosition.col or 0)
+	local end_row = tonumber(range.endPosition.row or 0)
+	local end_col = tonumber(range.endPosition.col or 0)
 
 	local text = insert_text .. suffix_text
 	if text == "" then
@@ -177,11 +181,12 @@ local function completion_inserter(current_completion, insert_text)
 
 	vim.schedule(function()
 		local lines = vim.split(text, "\n")
-		vim.cmd(string.format("normal! d%dh", end_offset - start_offset))
+		local buf = vim.api.nvim_get_current_buf()
+		vim.api.nvim_buf_set_text(buf, start_row, start_col, end_row, end_col, {})			
 		vim.api.nvim_put(lines, "c", false, true)
 	end)
 
-	return ''
+	return ""
 	-- return '<C-g>u' .. delete_range .. insert_text .. cursor_text
 end
 
